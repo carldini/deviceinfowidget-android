@@ -14,34 +14,24 @@
 	    android:paddingLeft="4dp" android:paddingRight="4dp" android:textColor="@color/light_grey"
 	    android:text="-----------------" />
 	    
-	<TextView android:id="@+id/deviceInfoWidget_mobile"
+	<TextView android:id="@+id/deviceInfoWidget_mobile_ipAddressLabel"
 		android:layout_below="@id/deviceInfoWidget_batteryChargeLabel"
 	    android:layout_width="wrap_content" android:layout_height="wrap_content"
-	    android:paddingTop="4dp" android:paddingLeft="4dp" android:paddingRight="4dp" android:textColor="@color/light_grey"
-	    android:text="Mobile Data:" />
-	<TextView android:id="@+id/deviceInfoWidget_mobile_ipAddressLabel"
-		android:layout_below="@id/deviceInfoWidget_mobile"
-	    android:layout_width="wrap_content" android:layout_height="wrap_content"
 	    android:paddingLeft="4dp" android:paddingRight="4dp" android:textColor="@color/light_grey"
-	    android:text="IP Address:" />
+	    android:text="Mobile:" />
 	<TextView android:id="@+id/deviceInfoWidget_mobile_ipAddressValue" 
-		android:layout_toRightOf="@id/deviceInfoWidget_mobile_ipAddressLabel" android:layout_below="@id/deviceInfoWidget_mobile"
+		android:layout_toRightOf="@id/deviceInfoWidget_mobile_ipAddressLabel" android:layout_below="@id/deviceInfoWidget_batteryChargeLabel"
 	    android:layout_width="fill_parent" android:layout_height="wrap_content"
 	    android:paddingLeft="4dp" android:paddingRight="4dp" android:textColor="@color/light_grey"
 	    android:text="---" />
 	    
-	<TextView android:id="@+id/deviceInfoWidget_wifi"
+	<TextView android:id="@+id/deviceInfoWidget_wifi_ipAddressLabel"
 		android:layout_below="@id/deviceInfoWidget_mobile_ipAddressLabel"
 	    android:layout_width="wrap_content" android:layout_height="wrap_content"
-	    android:paddingTop="4dp" android:paddingLeft="4dp" android:paddingRight="4dp" android:textColor="@color/light_grey"
-	    android:text="WIFI Data:" />
-	<TextView android:id="@+id/deviceInfoWidget_wifi_ipAddressLabel"
-		android:layout_below="@id/deviceInfoWidget_wifi"
-	    android:layout_width="wrap_content" android:layout_height="wrap_content"
 	    android:paddingLeft="4dp" android:paddingRight="4dp" android:textColor="@color/light_grey"
-	    android:text="IP Address:" />
+	    android:text="WIFI:" />
 	<TextView android:id="@+id/deviceInfoWidget_wifi_ipAddressValue" 
-		android:layout_toRightOf="@id/deviceInfoWidget_wifi_ipAddressLabel" android:layout_below="@id/deviceInfoWidget_wifi"
+		android:layout_toRightOf="@id/deviceInfoWidget_wifi_ipAddressLabel" android:layout_below="@id/deviceInfoWidget_mobile_ipAddressLabel"
 	    android:layout_width="fill_parent" android:layout_height="wrap_content"
 	    android:paddingLeft="4dp" android:paddingRight="4dp" android:textColor="@color/light_grey"
 	    android:text="---" />
