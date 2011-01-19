@@ -20,44 +20,9 @@ public class BatteryBroadcastReceiver extends BroadcastReceiver {
 		if (intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) {
 
 			String batteryLevel = String.valueOf(intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)) + "%";
-			String batteryVoltage = " " + String.valueOf((float) intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0) / 1000) + "V";
-			String batteryTemperature = " " + String.valueOf((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) / 10) + "c";
-			String batteryTechnology = " " + intent.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY);
-			String batteryPlugged = this.getBatteryPlugged(intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0));
 
-			int status = intent.getIntExtra("status", BatteryManager.BATTERY_STATUS_UNKNOWN);
-			String strStatus;
-			if (status == BatteryManager.BATTERY_STATUS_CHARGING) {
-				strStatus = "Charging" + batteryPlugged + batteryTemperature;
-			} else if (status == BatteryManager.BATTERY_STATUS_DISCHARGING) {
-				strStatus = "Discharging" + batteryTechnology + batteryVoltage;
-			} else if (status == BatteryManager.BATTERY_STATUS_NOT_CHARGING) {
-				strStatus = "Not charging";
-			} else if (status == BatteryManager.BATTERY_STATUS_FULL) {
-				strStatus = "Full" + batteryPlugged + batteryTemperature + batteryVoltage;
-			} else {
-				strStatus = "Unknown";
-			}
-			
-			int health = intent.getIntExtra("health", BatteryManager.BATTERY_HEALTH_UNKNOWN);
-			String strHealth;
-			if (health == BatteryManager.BATTERY_HEALTH_GOOD) {
-				strHealth = "Good";
-			} else if (health == BatteryManager.BATTERY_HEALTH_OVERHEAT) {
-				strHealth = "Over Heat";
-			} else if (health == BatteryManager.BATTERY_HEALTH_DEAD) {
-				strHealth = "Dead";
-			} else if (health == BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE) {
-				strHealth = "Over Voltage";
-			} else if (health == BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE) {
-				strHealth = "Unspecified Failure";
-			} else {
-				strHealth = "Unknown";
-			}
-			String batteryHealth = "Health: " + strHealth;
-			
 	        RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.deviceinfowidget);
-	        updateViews.setTextViewText(R.id.deviceInfoWidget_batteryChargeValue, batteryLevel + " " + strStatus);
+	        updateViews.setTextViewText(R.id.deviceInfoWidget_batteryChargeValue, batteryLevel + " " + this.getBatteryStatus(intent));
 	        
 	        ComponentName myComponentName = new ComponentName(context, DeviceInfoWidgetProvider.class);
 	        AppWidgetManager manager = AppWidgetManager.getInstance(context);
@@ -67,12 +32,53 @@ public class BatteryBroadcastReceiver extends BroadcastReceiver {
 	
 	private String getBatteryPlugged(int pluggedType) {
 		switch (pluggedType) {
-		case BatteryManager.BATTERY_PLUGGED_AC:
-			return " (AC)";
-		case BatteryManager.BATTERY_PLUGGED_USB:
-			return " (USB)";
-		default:
-			return " Battery";
+			case BatteryManager.BATTERY_PLUGGED_AC:
+				return " (AC)";
+			case BatteryManager.BATTERY_PLUGGED_USB:
+				return " (USB)";
+			default:
+				return " Battery";
+		}
+	}
+	
+	private String getBatteryStatus(Intent intent) {
+		
+		String batteryVoltage = " " + String.valueOf((float) intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0) / 1000) + "V";
+		String batteryTemperature = " " + String.valueOf((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) / 10) + "c";
+		String batteryTechnology = " " + intent.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY);
+		String batteryPlugged = this.getBatteryPlugged(intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0));
+		int batteryStatus = intent.getIntExtra("status", BatteryManager.BATTERY_STATUS_UNKNOWN);
+
+		switch (batteryStatus) {
+			case BatteryManager.BATTERY_STATUS_CHARGING:
+				return "Charging" + batteryPlugged + batteryTemperature;
+			case BatteryManager.BATTERY_STATUS_DISCHARGING:
+				return "Discharging" + batteryTechnology + batteryVoltage;
+			case BatteryManager.BATTERY_STATUS_NOT_CHARGING:
+				return "Not charging";
+			case BatteryManager.BATTERY_STATUS_FULL:
+				return "Full" + batteryPlugged + batteryTemperature + batteryVoltage;
+			default:
+				return "Unknown";
+		}
+	}
+	
+	private String getBatteryHealth(Intent intent) {
+		int batteryHealth = intent.getIntExtra("health", BatteryManager.BATTERY_HEALTH_UNKNOWN);
+		
+		switch (batteryHealth) {
+			case BatteryManager.BATTERY_HEALTH_GOOD:
+				return "Good";
+			case BatteryManager.BATTERY_HEALTH_OVERHEAT:
+				return "Overheat";
+			case BatteryManager.BATTERY_HEALTH_DEAD:
+				return "Dead";
+			case BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE:
+				return "Over Voltage";
+			case BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE:
+				return "Unspecified Failure";
+			default:
+				return "Unknown";
 		}
 	}
 }
