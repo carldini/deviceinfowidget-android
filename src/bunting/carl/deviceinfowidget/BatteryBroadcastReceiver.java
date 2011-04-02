@@ -44,7 +44,7 @@ public class BatteryBroadcastReceiver extends BroadcastReceiver {
 	private String getBatteryStatus(Intent intent) {
 		
 		String batteryVoltage = " " + String.valueOf((float) intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0) / 1000) + "V";
-		String batteryTemperature = " " + String.valueOf((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) / 10) + "c";
+		String batteryTemperature = " " + String.valueOf((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) / 10) + "\u2103";
 		String batteryTechnology = " " + intent.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY);
 		String batteryPlugged = this.getBatteryPlugged(intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0));
 		int batteryStatus = intent.getIntExtra("status", BatteryManager.BATTERY_STATUS_UNKNOWN);

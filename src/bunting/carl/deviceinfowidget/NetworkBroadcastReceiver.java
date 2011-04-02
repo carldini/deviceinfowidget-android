@@ -19,34 +19,63 @@ import android.widget.RemoteViews;
 import bunting.carl.deviceinfowidget.R;
 
 public class NetworkBroadcastReceiver extends BroadcastReceiver {
-
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		
-		RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.deviceinfowidget);
+		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.deviceinfowidget);
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         
-		NetworkInfo mobileNetworkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-		String mobileState = mobileNetworkInfo.getDetailedState().toString() + " (" + mobileNetworkInfo.getExtraInfo() + ")";
-		updateViews.setTextViewText(R.id.deviceInfoWidget_mobile_ipAddressValue, mobileState);
+        // Display Mobile Data connection details
+		remoteViews.setTextViewText(R.id.deviceInfoWidget_mobile_ipAddressValue, this.getMobileDataInfo(context, connectivityManager));
 		
-		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-		if (wifiInfo != null) {
-			int ipAddress = wifiInfo.getIpAddress();
-			String ssid = wifiInfo.getSSID();
-			updateViews.setTextViewText(R.id.deviceInfoWidget_wifi_ipAddressValue, "" + NetworkBroadcastReceiver.intToIp(ipAddress) + " (" + ssid + ")");
-		} else {
-			updateViews.setTextViewText(R.id.deviceInfoWidget_wifi_ipAddressValue, "---");
-		}
-		
+		// Display Wifi connection details
+		remoteViews.setTextViewText(R.id.deviceInfoWidget_wifi_ipAddressValue, this.getWifiInfo(context, connectivityManager));
 
-        ComponentName myComponentName = new ComponentName(context, DeviceInfoWidgetProvider.class);
+        ComponentName thisComponentName = new ComponentName(context, DeviceInfoWidgetProvider.class);
         AppWidgetManager manager = AppWidgetManager.getInstance(context);
-        manager.updateAppWidget(myComponentName, updateViews);
+        manager.updateAppWidget(thisComponentName, remoteViews);
 		
 	}
 	
+	private String getMobileDataInfo(Context context, ConnectivityManager connectivityManager) {
+        NetworkInfo mobileNetworkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+		StringBuilder mobileState = new StringBuilder(mobileNetworkInfo.getDetailedState().name());
+		if (mobileNetworkInfo.getExtraInfo() != null) {
+			mobileState.append(" (")
+				.append(mobileNetworkInfo.getExtraInfo())
+				.append(")");
+		}
+		return mobileState.toString();
+	}
+	
+	/**
+	 * 
+	 * @param context
+	 * @param connectivityManager
+	 * @return
+	 */
+	private String getWifiInfo(Context context, ConnectivityManager connectivityManager) {
+		WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        NetworkInfo wifiNetworkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+		StringBuilder wifiState = new StringBuilder(wifiNetworkInfo.getDetailedState().name());
+		if (wifiInfo != null && wifiInfo.getSSID() != null) {
+			int ipAddress = wifiInfo.getIpAddress();
+			String ssid = wifiInfo.getSSID();
+			wifiState.append(" ")
+				.append(NetworkBroadcastReceiver.intToIp(ipAddress))
+				.append(" (")
+				.append(ssid)
+				.append(")");
+		}
+		return wifiState.toString();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getLocalIpAddress() {
 	    try {
 	    	Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
