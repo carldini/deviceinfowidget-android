@@ -27,7 +27,7 @@ public class NetworkBroadcastReceiver extends BroadcastReceiver {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         
         // Display Mobile Data connection details
-		remoteViews.setTextViewText(R.id.deviceInfoWidget_mobile_ipAddressValue, this.getMobileDataInfo(context, connectivityManager));
+		remoteViews.setTextViewText(R.id.deviceInfoWidget_mobile_ipAddressValue, this.getMobileDataInfo(connectivityManager));
 		
 		// Display Wifi connection details
 		remoteViews.setTextViewText(R.id.deviceInfoWidget_wifi_ipAddressValue, this.getWifiInfo(context, connectivityManager));
@@ -38,7 +38,7 @@ public class NetworkBroadcastReceiver extends BroadcastReceiver {
 		
 	}
 	
-	private String getMobileDataInfo(Context context, ConnectivityManager connectivityManager) {
+	private String getMobileDataInfo(ConnectivityManager connectivityManager) {
         NetworkInfo mobileNetworkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 		StringBuilder mobileState = new StringBuilder(mobileNetworkInfo.getDetailedState().name());
 		if (mobileNetworkInfo.getExtraInfo() != null) {

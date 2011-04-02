@@ -63,6 +63,7 @@ public class BatteryBroadcastReceiver extends BroadcastReceiver {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private String getBatteryHealth(Intent intent) {
 		int batteryHealth = intent.getIntExtra("health", BatteryManager.BATTERY_HEALTH_UNKNOWN);
 		

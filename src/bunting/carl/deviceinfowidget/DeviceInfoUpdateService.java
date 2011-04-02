@@ -1,5 +1,6 @@
 package bunting.carl.deviceinfowidget;
 
+import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -26,7 +27,7 @@ public class DeviceInfoUpdateService extends Service {
 	    this.registerReceiver(this.networkBroadcastReceiver, networkIntentFilter);
 		
         // Build the widget update for today
-        RemoteViews updateViews = updateView(this);
+        RemoteViews updateViews = this.updateView(this);
 
         // Push update for this widget to the home screen
         ComponentName thisWidget = new ComponentName(this, DeviceInfoWidgetProvider.class);
@@ -43,6 +44,10 @@ public class DeviceInfoUpdateService extends Service {
 	
 	private RemoteViews updateView(Context context) {
         RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.deviceinfowidget);
+        
+        Intent wifiScannerIntent = new Intent(this, WifiScanner.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, wifiScannerIntent, 0);
+        updateViews.setOnClickPendingIntent(R.id.deviceInfoWidget_wifi_ipAddressValue, pendingIntent);
         return updateViews;
 	}
 	
