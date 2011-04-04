@@ -15,6 +15,7 @@ public class DeviceInfoUpdateService extends Service {
 	
 	private BatteryBroadcastReceiver batteryBroadcastReceiver = new BatteryBroadcastReceiver();
 	private NetworkBroadcastReceiver networkBroadcastReceiver = new NetworkBroadcastReceiver();
+	private RemoteViews updateViews;
 	
 	@Override
 	public void onCreate() {
@@ -26,13 +27,17 @@ public class DeviceInfoUpdateService extends Service {
 	    IntentFilter networkIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 	    this.registerReceiver(this.networkBroadcastReceiver, networkIntentFilter);
 		
-        // Build the widget update for today
-        RemoteViews updateViews = this.updateView(this);
+        if (this.updateViews == null) {
+        	this.updateView(this);
+        }
+        Intent wifiScannerIntent = new Intent(this, WifiScanner.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, wifiScannerIntent, 0);
+        this.updateViews.setOnClickPendingIntent(R.id.deviceInfoWidget_wifi_ipAddressValue, pendingIntent);
 
         // Push update for this widget to the home screen
         ComponentName thisWidget = new ComponentName(this, DeviceInfoWidgetProvider.class);
         AppWidgetManager manager = AppWidgetManager.getInstance(this);
-        manager.updateAppWidget(thisWidget, updateViews);
+        manager.updateAppWidget(thisWidget, this.updateViews);
 	}
 	
 	@Override
@@ -42,13 +47,17 @@ public class DeviceInfoUpdateService extends Service {
 		this.unregisterReceiver(this.networkBroadcastReceiver);
 	}
 	
-	private RemoteViews updateView(Context context) {
-        RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.deviceinfowidget);
-        
-        Intent wifiScannerIntent = new Intent(this, WifiScanner.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, wifiScannerIntent, 0);
-        updateViews.setOnClickPendingIntent(R.id.deviceInfoWidget_wifi_ipAddressValue, pendingIntent);
-        return updateViews;
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		if (this.updateViews == null) {
+        	this.updateView(this);
+        }
+		return super.onStartCommand(intent, flags, startId);
+	}
+	
+	
+	private void updateView(Context context) {
+		this.updateViews = new RemoteViews(context.getPackageName(), R.layout.deviceinfowidget);
 	}
 	
 
