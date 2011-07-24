@@ -2,5 +2,5 @@
 <resources>
     <string name="hello">Device Info Widget!</string>
     <string name="app_name">DeviceInfoWidget</string>
-    <string name="app_name_wifi">WIFI Scanner</string>
+    <string name="app_name_wifi">WIFI Scan Results</string>
 </resources>
